@@ -17,7 +17,7 @@ bool Flowerbed::couldBeWatered(unsigned long currTime) {
         return currTime - _lastWatering >= WATERING_DELAY;
 }
 
-int Flowerbed::getSensorValue() const {
+int Flowerbed::getSensorValue() {
         _tempSensor.generateValue();
         return _tempSensor.getValue();
 }
@@ -25,3 +25,5 @@ int Flowerbed::getSensorValue() const {
 int Flowerbed::getTempLimit() const {
         return TEMP_LIMIT;
 }
+
+

@@ -10,9 +10,17 @@
 class WateringMachine {
 private:
     const unsigned int WORK_TIME = 10 * MINUTE;
-    unsigned long startTime;
+    unsigned long _startTime;
+    int _currentFlowerbedIndex;
 
 public:
+
+    WateringMachine();
+
+    int getCurrentFlowerbedIndex() const;
+    int getWorkTime() const;
+    void moveTo(unsigned int flowerbedIndex);
+    void waterCurrentFlowerbed(unsigned long currTime);
     bool isBusy(unsigned long currTime);
 };
 

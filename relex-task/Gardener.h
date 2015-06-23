@@ -8,16 +8,20 @@
 
 #include "Flowerbed.h"
 #include "WateringMachine.h"
+#include <iostream>
+#include <thread>
 
 class Gardener {
 public:
+    Gardener();
     void startWork(); //infinite loop with time increment here
     void moveMachine(int machineIndex, int flowerbedIndex); //sleep 5 minutes
     void doWatering(int machineIndex); //sleep 10 minutes
 private:
-    unsigned long time;
-    Flowerbed flowerbed; //there would be an array in the next versions
-    WateringMachine machine; //array in the next versions
+    unsigned long _time;
+    Flowerbed _flowerbed; //there would be an array in the next versions
+    WateringMachine _machine; //array in the next versions
+    std::string secondsToHoursAndMins(unsigned long seconds);
 };
 
 
