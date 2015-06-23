@@ -8,7 +8,7 @@ void Gardener::moveMachine(int machineIndex = 0, int flowerbedIndex = 0) {
     std::cout << "_______________" << std::endl;
     std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    _machine.moveTo(flowerbedIndex);
+    _machine.moveTo(&_flowerbed);
     _time += 5 * MINUTE;
     std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
@@ -21,7 +21,7 @@ void Gardener::doWatering(int machineIndex = 0) {
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
     _machine.waterCurrentFlowerbed(_time);
     _time += _machine.getWorkTime();
-    _flowerbed.watering(_time);
+    //_flowerbed.watering(_time);
     std::cout << "Machine " << machineIndex << " watered flowerbed " << _machine.getCurrentFlowerbedIndex() <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
     std::cout << "_______________" << std::endl;

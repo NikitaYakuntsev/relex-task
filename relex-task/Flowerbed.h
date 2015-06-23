@@ -19,6 +19,7 @@ public:
     bool couldBeWatered(unsigned long currTime);
     int getSensorValue(); //there would be type selection in the next tasks
     int getTempLimit() const;
+    int getIndex() const;
 
 private:
     const int WATERING_DELAY = 4 * 60 * MINUTE;

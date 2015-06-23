@@ -27,3 +27,6 @@ int Flowerbed::getTempLimit() const {
 }
 
 
+int Flowerbed::getIndex() const {
+        return _index;
+}

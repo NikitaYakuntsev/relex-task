@@ -6,12 +6,13 @@
 #define RELEX_TASK_WATERINGMACHINE_H
 
 #include "common.h"
+#include "Flowerbed.h"
 
 class WateringMachine {
 private:
     const unsigned int WORK_TIME = 10 * MINUTE;
     unsigned long _startTime;
-    int _currentFlowerbedIndex;
+    Flowerbed* _currentFlowerbed;
 
 public:
 
@@ -19,7 +20,7 @@ public:
 
     int getCurrentFlowerbedIndex() const;
     int getWorkTime() const;
-    void moveTo(unsigned int flowerbedIndex);
+    void moveTo(Flowerbed* flowerbed);
     void waterCurrentFlowerbed(unsigned long currTime);
     bool isBusy(unsigned long currTime);
 };
