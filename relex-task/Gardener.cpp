@@ -33,8 +33,8 @@ Gardener::Gardener() : _flowerbed(Flowerbed(0))  { }
 void Gardener::startWork() {
     _time = 0;
     while (true) {
-        if (_flowerbed.getSensorValue() > _flowerbed.getTempLimit())
-            if (_flowerbed.couldBeWatered(_time))
+        if (_flowerbed.couldBeWatered(_time))
+            if (_flowerbed.getSensorValue() > _flowerbed.getTempLimit())
                 if (!_machine.isBusy(_time)) {
                     moveMachine();
                     doWatering();
