@@ -5,5 +5,5 @@
 #include "WateringMachine.h"
 
 bool WateringMachine::isBusy(unsigned long currTime) {
-    return (currTime - startTime) > WORK_TIME ? false : true;
+    return currTime - startTime <= WORK_TIME;
 }
