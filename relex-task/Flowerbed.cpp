@@ -6,7 +6,7 @@
 
 
 Flowerbed::Flowerbed(unsigned int index)
-        : _index(index), _tempSensor(Sensor(SensorType::temperature)), _lastWatering(-5 * 60 * MINUTE) { }
+        : _index(index), _tempSensor(Sensor(SensorType::temperature)), _lastWatering(-1 * WATERING_DELAY - MINUTE) { }
 
 void Flowerbed::watering(unsigned long currTime) {
         _lastWatering = currTime;
