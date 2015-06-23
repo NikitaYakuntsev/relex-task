@@ -8,7 +8,7 @@ void Gardener::moveMachine(int machineIndex = 0, int flowerbedIndex = 0) {
     std::cout << "_______________" << std::endl;
     std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    _machine.moveTo(&_flowerbed);
+    _machine.moveTo(&_flowerbed); //here should be selection by index
     _time += 5 * MINUTE;
     std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
@@ -52,7 +52,7 @@ std::string Gardener::secondsToHoursAndMins(unsigned long seconds) {
     std::stringstream str;
 
     str <<  int(hours) << " hours; " << int(minutes%60)
-    << " minutes; " << int(seconds%60) << " seconds";
+        << " minutes; " << int(seconds%60) << " seconds";
     std::string result;
     getline(str, result);
     return result;
