@@ -5,14 +5,26 @@
 #include "Gardener.h"
 
 void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
-    std::cout << "_______________" << std::endl;
-    std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
-    _time += 5 * MINUTE;
-    std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    std::cout << "_______________" << std::endl;
+    //returning to start position
+    if (flowerbedIndex == -1) {
+        std::cout << "_______________" << std::endl;
+        std::cout << "Gardener is moving machine " << machineIndex << " to start position" <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        _machine.moveTo(nullptr); //here should be selection by index
+        _time += 5 * MINUTE;
+        std::cout << "Machine " << machineIndex << " moved to start position" <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        std::cout << "_______________" << std::endl;
+    } else {
+        std::cout << "_______________" << std::endl;
+        std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
+        _time += 5 * MINUTE;
+        std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        std::cout << "_______________" << std::endl;
+    }
 }
 
 void Gardener::doWatering(int machineIndex = 0) {
@@ -54,6 +66,7 @@ void Gardener::startWork() {
                     if (!_machine.isBusy(_time)) {
                         moveMachine(i);
                         doWatering();
+                        moveMachine(-1);
             }
         }
         _time += 5 * MINUTE;

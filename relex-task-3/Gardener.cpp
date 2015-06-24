@@ -9,7 +9,7 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
     std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
     _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
-    _time += 5 * MINUTE;
+    _time += 5 * MINUTE; //there should be a flowerbed get method to know the time
     std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
     std::cout << "_______________" << std::endl;
