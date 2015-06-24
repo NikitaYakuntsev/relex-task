@@ -28,7 +28,7 @@ void Gardener::doWatering(int machineIndex = 0) {
 
 }
 
-Gardener::Gardener() : _flowerbed(Flowerbed(0))  { }
+Gardener::Gardener()  { }
 
 void Gardener::startWork() {
     _time = 0;
@@ -44,16 +44,70 @@ void Gardener::startWork() {
 
     }
 
+
 }
 
 std::string Gardener::secondsToHoursAndMins(unsigned long seconds) {
     int minutes = seconds / 60;
     int hours = minutes / 60;
-    std::stringstream str;
+    std::stringstream strm;
 
-    str <<  int(hours) << " hours; " << int(minutes%60)
+    strm <<  int(hours) << " hours; " << int(minutes%60)
         << " minutes; " << int(seconds%60) << " seconds";
-    std::string result;
-    getline(str, result);
+    std::string result = strm.str();
     return result;
+}
+
+void Gardener::loadDataFromFile() {
+
+    //file beds.txt has n in the first line,
+    //then n lines with m_i - number of sensors, connected to this flowerbed
+    //then m_i pairs of numbers p_j l_j, where p_j is type of sensor (0 - temp, 1 - humidity)
+    //and l_j is limit for this type
+    //file i-p_j.txt contains number (size) and then (size) pairs <time, value> for p_j sensor and i flowerbed
+    std::ifstream bin("beds.txt");
+    int n;
+    bin >> n;
+    _flowerbeds.resize(n);
+    for (int i = 0; i < n; i++) {
+        int m;
+        bin >> m;
+        std::map<SensorType, Sensor> sensors;
+        for (int j = 0; j < m; j++) {
+            int sensType, sensLimit;
+            bin >> sensType >> sensLimit;
+
+            std::stringstream sstream;
+            sstream << i << "-" << j << ".txt";
+            std::string name = sstream.str();
+            std::ifstream sin(name.c_str());
+
+            int size;
+            sin >> size; //number of pairs <time, value> for sensor
+            std::map<long, int> schedule;
+            for (int k = 0; k < size; k++) {
+                long time;
+                int value;
+                sin >> time >> value;
+                schedule[time] = value;
+            }
+            sin.close();
+
+            SensorType type;
+            switch (sensType) {
+                case 0:
+                    type = temperature;
+                    break;
+                case 1:
+                    type = humidity;
+                    break;
+            }
+
+
+            Sensor sen(type, schedule);
+            sensors[type] = sen;
+        }
+        _flowerbeds[i].setSensors(sensors);
+    }
+    bin.close();
 }

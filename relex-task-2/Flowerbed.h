@@ -14,11 +14,16 @@ class Flowerbed {
 public:
 
     Flowerbed(unsigned int index);
+    Flowerbed();
     void watering(unsigned long currTime);
     bool couldBeWatered(unsigned long currTime);
     int getSensorValue(const SensorType &sensorType, const long currTime); //there would be type selection in the next tasks
     int getSensorLimit(const SensorType &sensorType) const;
     int getIndex() const;
+
+    void setSensors(const std::map<SensorType, Sensor> &sensors);
+
+    void setValueLimits(const std::map<SensorType, int> &valueLimits);
 
 private:
     const int WATERING_DELAY = 4 * 60 * MINUTE;

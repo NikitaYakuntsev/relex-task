@@ -30,3 +30,15 @@ int Flowerbed::getSensorLimit(const SensorType &sensorType) const {
 int Flowerbed::getIndex() const {
         return _index;
 }
+
+Flowerbed::Flowerbed() {
+    _index = 0;
+}
+
+void Flowerbed::setSensors(const std::map<SensorType, Sensor> &sensors) {
+    _sensors = sensors;
+}
+
+void Flowerbed::setValueLimits(const std::map<SensorType, int> &valueLimits) {
+    _valueLimits = valueLimits;
+}
