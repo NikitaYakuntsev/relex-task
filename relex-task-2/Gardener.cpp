@@ -10,8 +10,9 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
         std::cout << "_______________" << std::endl;
         std::cout << "Gardener is moving machine " << machineIndex << " to start position" <<
         ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-        _machine.moveTo(nullptr); //here should be selection by index
         _time += 5 * MINUTE;
+        _machine.moveTo(nullptr); //here should be selection by index
+
         std::cout << "Machine " << machineIndex << " moved to start position" <<
         ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
         std::cout << "_______________" << std::endl;
@@ -19,8 +20,9 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
         std::cout << "_______________" << std::endl;
         std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
         ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-        _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
         _time += 5 * MINUTE;
+        _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
+
         std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
         ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
         std::cout << "_______________" << std::endl;

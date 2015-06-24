@@ -6,13 +6,15 @@
 
 
 bool WateringMachine::isBusy(unsigned long currTime) {
+    /*
     bool result = currTime - _startTime <= WORK_TIME;
     if (!result)
         _currentFlowerbed = nullptr;
-    return result;
+    */
+    return _currentFlowerbed != nullptr;
 }
 
-WateringMachine::WateringMachine() : _startTime(-1 * WORK_TIME - MINUTE), _currentFlowerbed(nullptr) { }
+WateringMachine::WateringMachine() : _currentFlowerbed(nullptr) { }
 
 void WateringMachine::moveTo(Flowerbed* flowerbed) {
     _currentFlowerbed = flowerbed; //this takes 5 minutes. Let the gardened move this machine
