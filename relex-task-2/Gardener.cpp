@@ -4,7 +4,7 @@
 
 #include "Gardener.h"
 
-void Gardener::moveMachine(int machineIndex = 0, int flowerbedIndex = 0) {
+void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
     std::cout << "_______________" << std::endl;
     std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
@@ -73,6 +73,7 @@ void Gardener::loadDataFromFile() {
         int m;
         bin >> m;
         std::map<SensorType, Sensor> sensors;
+        std::map<SensorType, int> valueLimits;
         for (int j = 0; j < m; j++) {
             int sensType, sensLimit;
             bin >> sensType >> sensLimit;
@@ -103,11 +104,13 @@ void Gardener::loadDataFromFile() {
                     break;
             }
 
-
             Sensor sen(type, schedule);
             sensors[type] = sen;
+            valueLimits[type] = sensLimit;
         }
+        _flowerbeds[i] = Flowerbed(i);
         _flowerbeds[i].setSensors(sensors);
+        _flowerbeds[i].setValueLimits(valueLimits);
     }
     bin.close();
 }
