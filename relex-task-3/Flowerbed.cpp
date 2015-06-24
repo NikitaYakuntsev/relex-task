@@ -51,3 +51,19 @@ void Flowerbed::setIndex(int index) {
     _index = index;
     _lastWatering = -1 * WATERING_DELAY - MINUTE;
 }
+
+int Flowerbed::getTimeToMove() const {
+    return _timeToMove;
+}
+
+void Flowerbed::setTimeToMove(int timeToMove) {
+    _timeToMove = timeToMove;
+}
+
+int Flowerbed::getTimeToWater() const {
+    return _timeToWater;
+}
+
+void Flowerbed::setTimeToWater(int timeToWater) {
+    _timeToWater = timeToWater;
+}

@@ -19,26 +19,35 @@ public:
     bool couldBeWatered(unsigned long currTime);
     int getSensorValue(const SensorType &sensorType, const long currTime); //there would be type selection in the next tasks
     int getSensorLimit(const SensorType &sensorType) const;
+
     int getIndex() const;
-
-
     void setIndex(int index);
-    void setSensors(const std::map<SensorType, Sensor> &sensors);
-
-    void setValueLimits(const std::map<SensorType, int> &valueLimits);
 
     const std::map<SensorType, Sensor> & getSensors() const;
+    void setSensors(const std::map<SensorType, Sensor> &sensors);
+    void setValueLimits(const std::map<SensorType, int> &valueLimits);
+
+    int getTimeToMove() const;
+    void setTimeToMove(int timeToMove);
+    int getTimeToWater() const;
+    void setTimeToWater(int timeToWater);
+
+
 
 private:
     const int WATERING_DELAY = 4 * 60 * MINUTE;
     unsigned int _index;
-    const int TEMP_LIMIT = 30; //would be array of pair <type, limit>
 
     std::map<SensorType, int> _valueLimits; //limits for sensor type
     std::map<SensorType, Sensor> _sensors;
 
-//Sensor _tempSensor; //array of sensors
     long _lastWatering;
+
+
+
+private:
+    int _timeToMove;
+    int _timeToWater;
 
 
 

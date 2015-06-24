@@ -10,7 +10,7 @@
 
 class WateringMachine {
 private:
-    const unsigned int WORK_TIME = 10 * MINUTE;
+    unsigned int _workTime;
     unsigned long _startTime;
     Flowerbed* _currentFlowerbed;
 
@@ -18,7 +18,7 @@ public:
 
     WateringMachine();
 
-    int getCurrentFlowerbedIndex() const;
+    Flowerbed * getCurrentFlowerbed() const;
     int getWorkTime() const;
     void moveTo(Flowerbed* flowerbed);
     void waterCurrentFlowerbed(unsigned long currTime);
