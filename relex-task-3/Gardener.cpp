@@ -63,11 +63,11 @@ void Gardener::startWork() {
         for (int i = 0; i < _flowerbeds.size(); i++) {
             Flowerbed _flowerbed = _flowerbeds[i];
             if (_flowerbed.couldBeWatered(_time))
-            if (needToBeWatered(_flowerbed))
-            if (!_machine.isBusy(_time)) {
-                moveMachine(i);
-                doWatering();
-                moveMachine(-1);
+                if (needToBeWatered(_flowerbed))
+                    if (!_machine.isBusy(_time)) {
+                        moveMachine(i);
+                        doWatering();
+                        moveMachine(-1);
             }
         }
         _time += 5 * MINUTE;
