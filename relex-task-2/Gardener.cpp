@@ -8,7 +8,7 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
     std::cout << "_______________" << std::endl;
     std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    _machine.moveTo(&_flowerbed); //here should be selection by index
+    _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
     _time += 5 * MINUTE;
     std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
@@ -30,15 +30,32 @@ void Gardener::doWatering(int machineIndex = 0) {
 
 Gardener::Gardener()  { }
 
+
+// There should be a correct compare expression, based on sensor type.
+bool Gardener::needToBeWatered(Flowerbed &f) {
+    bool result = false;
+    ///TODO
+    for (auto &sens : f.getSensors())
+        result |= (f.getSensorValue(sens.first, _time) > f.getSensorLimit(sens.first));
+    return result;
+
+}
+
+
 void Gardener::startWork() {
+    loadDataFromFile();
     _time = 0;
     while (true) {
-        if (_flowerbed.couldBeWatered(_time))
-            if (_flowerbed.getSensorValue() > _flowerbed.getTempLimit())
-                if (!_machine.isBusy(_time)) {
-                    moveMachine();
-                    doWatering();
-                }
+
+        for (int i = 0; i < _flowerbeds.size(); i++) {
+            Flowerbed _flowerbed = _flowerbeds[i];
+            if (_flowerbed.couldBeWatered(_time))
+                if (needToBeWatered(_flowerbed))
+                    if (!_machine.isBusy(_time)) {
+                        moveMachine(i);
+                        doWatering();
+            }
+        }
         _time += 5 * MINUTE;
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -52,8 +69,8 @@ std::string Gardener::secondsToHoursAndMins(unsigned long seconds) {
     int hours = minutes / 60;
     std::stringstream strm;
 
-    strm <<  int(hours) << " hours; " << int(minutes%60)
-        << " minutes; " << int(seconds%60) << " seconds";
+    strm <<  int(hours) << " hours; " << int(minutes % 60)
+        << " minutes; " << int(seconds % 60) << " seconds";
     std::string result = strm.str();
     return result;
 }
@@ -69,11 +86,13 @@ void Gardener::loadDataFromFile() {
     int n;
     bin >> n;
     _flowerbeds.resize(n);
+    //flowerbeds loop
     for (int i = 0; i < n; i++) {
         int m;
         bin >> m;
         std::map<SensorType, Sensor> sensors;
         std::map<SensorType, int> valueLimits;
+        //sensors loop
         for (int j = 0; j < m; j++) {
             int sensType, sensLimit;
             bin >> sensType >> sensLimit;
@@ -108,7 +127,7 @@ void Gardener::loadDataFromFile() {
             sensors[type] = sen;
             valueLimits[type] = sensLimit;
         }
-        _flowerbeds[i] = Flowerbed(i);
+        _flowerbeds[i].setIndex(i);
         _flowerbeds[i].setSensors(sensors);
         _flowerbeds[i].setValueLimits(valueLimits);
     }

@@ -26,6 +26,8 @@ private:
     WateringMachine _machine; //array in the next versions
     std::string secondsToHoursAndMins(unsigned long seconds);
 
+    bool needToBeWatered(Flowerbed& f);
+
 };
 
 

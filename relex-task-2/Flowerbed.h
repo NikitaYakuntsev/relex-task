@@ -21,9 +21,13 @@ public:
     int getSensorLimit(const SensorType &sensorType) const;
     int getIndex() const;
 
+
+    void setIndex(int index);
     void setSensors(const std::map<SensorType, Sensor> &sensors);
 
     void setValueLimits(const std::map<SensorType, int> &valueLimits);
+
+    const std::map<SensorType, Sensor> & getSensors() const;
 
 private:
     const int WATERING_DELAY = 4 * 60 * MINUTE;
@@ -32,8 +36,10 @@ private:
 
     std::map<SensorType, int> _valueLimits; //limits for sensor type
     std::map<SensorType, Sensor> _sensors;
-    //Sensor _tempSensor; //array of sensors
+
+//Sensor _tempSensor; //array of sensors
     long _lastWatering;
+
 
 
 

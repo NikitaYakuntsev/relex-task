@@ -42,3 +42,12 @@ void Flowerbed::setSensors(const std::map<SensorType, Sensor> &sensors) {
 void Flowerbed::setValueLimits(const std::map<SensorType, int> &valueLimits) {
     _valueLimits = valueLimits;
 }
+
+const std::map<SensorType, Sensor> & Flowerbed::getSensors() const {
+    return _sensors;
+}
+
+void Flowerbed::setIndex(int index) {
+    _index = index;
+    _lastWatering = -1 * WATERING_DELAY - MINUTE;
+}

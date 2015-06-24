@@ -7,7 +7,7 @@
 Sensor::Sensor(const SensorType& type) : _type(type) { }
 
 
-const SensorType &Sensor::getType() const {
+const SensorType & Sensor::getType() const {
     return _type;
 }
 
@@ -25,3 +25,7 @@ void Sensor::generateValue(unsigned long currTime) {
 }
 
 Sensor::Sensor(const SensorType &type, const std::map<long, int> &schedule) : _type(type), _schedule(schedule) { }
+
+Sensor::Sensor() {
+    _type = temperature;
+}

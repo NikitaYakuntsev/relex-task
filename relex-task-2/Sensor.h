@@ -15,10 +15,11 @@ enum SensorType {
 
 class Sensor {
 public:
+    Sensor();
     Sensor(const SensorType &type);
     Sensor(const SensorType &type, const std::map<long, int> &schedule);
 
-    const SensorType &getType() const;
+    const SensorType & getType() const;
 
     int getValue() const;
 
