@@ -5,25 +5,37 @@
 #include "Gardener.h"
 
 void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
-    std::cout << "_______________" << std::endl;
-    std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
-    _time += 5 * MINUTE; //there should be a flowerbed get method to know the time
-    std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    std::cout << "_______________" << std::endl;
+    //returning to start position
+    if (flowerbedIndex == -1) {
+        std::cout << "_______________" << std::endl;
+        std::cout << "Gardener is moving machine " << machineIndex << " to start position" <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        _machine.moveTo(nullptr); //here should be selection by index
+        _time += 5 * MINUTE;
+        std::cout << "Machine " << machineIndex << " moved to start position" <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        std::cout << "_______________" << std::endl;
+    } else {
+        std::cout << "_______________" << std::endl;
+        std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        _machine.moveTo(&_flowerbeds[flowerbedIndex]); //here should be selection by index
+        _time += 5 * MINUTE;
+        std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        std::cout << "_______________" << std::endl;
+    }
 }
 
 void Gardener::doWatering(int machineIndex = 0) {
     std::cout << "_______________" << std::endl;
     std::cout << "Machine " << machineIndex << " is watering flowerbed " << _machine.getCurrentFlowerbedIndex() <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+    ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
     _machine.waterCurrentFlowerbed(_time);
     _time += _machine.getWorkTime();
     //_flowerbed.watering(_time);
     std::cout << "Machine " << machineIndex << " watered flowerbed " << _machine.getCurrentFlowerbedIndex() <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+    ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
     std::cout << "_______________" << std::endl;
 
 }
@@ -50,10 +62,11 @@ void Gardener::startWork() {
         for (int i = 0; i < _flowerbeds.size(); i++) {
             Flowerbed _flowerbed = _flowerbeds[i];
             if (_flowerbed.couldBeWatered(_time))
-                if (needToBeWatered(_flowerbed))
-                    if (!_machine.isBusy(_time)) {
-                        moveMachine(i);
-                        doWatering();
+            if (needToBeWatered(_flowerbed))
+            if (!_machine.isBusy(_time)) {
+                moveMachine(i);
+                doWatering();
+                moveMachine(-1);
             }
         }
         _time += 5 * MINUTE;
@@ -70,7 +83,7 @@ std::string Gardener::secondsToHoursAndMins(unsigned long seconds) {
     std::stringstream strm;
 
     strm <<  int(hours) << " hours; " << int(minutes % 60)
-        << " minutes; " << int(seconds % 60) << " seconds";
+    << " minutes; " << int(seconds % 60) << " seconds";
     std::string result = strm.str();
     return result;
 }
