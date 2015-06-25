@@ -23,10 +23,12 @@ private:
     unsigned long _time;
     //Flowerbed _flowerbed; //there would be an array in the next versions
     std::vector<Flowerbed> _flowerbeds;
-    WateringMachine _machine; //array in the next versions
+    //WateringMachine _machine; //array in the next versions
+    std::vector<WateringMachine> _machines;
     std::string secondsToHoursAndMins(unsigned long seconds);
 
     bool needToBeWatered(Flowerbed& f);
+    void checkMachines();
 
 };
 

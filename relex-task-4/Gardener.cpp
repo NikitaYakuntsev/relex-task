@@ -9,34 +9,34 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
     std::cout << "_______________" << std::endl;
     if (flowerbedIndex == -1) {
 
-        std::cout << "Gardener is moving machine " << machineIndex << " to start position" <<
+        std::cout << "Machine " << machineIndex << " is moving to start position" <<
         ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-        _time += _machine.getCurrentFlowerbed()->getTimeToMove(); //gardener spends as much time as he has already spent to get machine there.
-        _machine.moveTo(nullptr);
+        long tmptime = _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove();
+        _machines[machineIndex].moveTo(nullptr);
 
-        std::cout << "Machine " << machineIndex << " moved to start position" <<
-        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        std::cout << "Machine " << machineIndex << " will be in the start position" <<
+        " at time since start: " << secondsToHoursAndMins(_time + tmptime) << "." << std::endl;
     } else {
-        std::cout << "Gardener is moving machine " << machineIndex << " to flowerbed " << flowerbedIndex <<
+        std::cout << "Machine " << machineIndex << " is moving to flowerbed " << flowerbedIndex <<
         ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-        _time += _flowerbeds[flowerbedIndex].getTimeToMove(); //gardener images time to get the flowerbed
-        _machine.moveTo(&_flowerbeds[flowerbedIndex]);
+        //_time += _flowerbeds[flowerbedIndex].getTimeToMove(); //gardener images time to get the flowerbed
+        _machines[machineIndex].moveTo(&_flowerbeds[flowerbedIndex]);
 
-        std::cout << "Machine " << machineIndex << " moved to flowerbed " << flowerbedIndex <<
-        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+        std::cout << "Machine " << machineIndex << " will be near the flowerbed " << flowerbedIndex <<
+        ". Time since start: " << secondsToHoursAndMins(_time + _flowerbeds[flowerbedIndex].getTimeToMove()) << "." << std::endl;
     }
     std::cout << "_______________" << std::endl;
 }
 
 void Gardener::doWatering(int machineIndex = 0) {
     std::cout << "_______________" << std::endl;
-    std::cout << "Machine " << machineIndex << " is watering flowerbed " << _machine.getCurrentFlowerbed()->getIndex() <<
-    ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-    _machine.waterCurrentFlowerbed(_time);
-    _time += _machine.getWorkTime();
-    //_flowerbed.watering(_time);
-    std::cout << "Machine " << machineIndex << " watered flowerbed " << _machine.getCurrentFlowerbed()->getIndex() <<
-    ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+    std::cout << "Machine " << machineIndex << " will be watering flowerbed " << _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
+    " at time since start: " << secondsToHoursAndMins(_time + _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove()) << "." << std::endl;
+    _machines[machineIndex].waterCurrentFlowerbed(_time);
+    //_time += _machines[machineIndex].getWorkTime();
+
+    std::cout << "Machine " << machineIndex << " will water flowerbed " << _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
+    " at time since start: " << secondsToHoursAndMins(_time + _machines[machineIndex].getCurrentFlowerbed()->getTimeToWater()) << "." << std::endl;
     std::cout << "_______________" << std::endl;
 
 }
@@ -47,31 +47,44 @@ Gardener::Gardener()  { }
 // There should be a correct compare expression, based on sensor type.
 bool Gardener::needToBeWatered(Flowerbed &f) {
     bool result = false;
-    ///TODO
+    ///TODO check sign!
     for (auto &sens : f.getSensors())
         result |= (f.getSensorValue(sens.first, _time) > f.getSensorLimit(sens.first));
     return result;
 
 }
 
+void Gardener::checkMachines() {
+    for (int i = 0; i < _machines.size(); i++) {
+        if (!_machines[i].isBusy(_time) && _machines[i].getCurrentFlowerbed() != nullptr)
+            moveMachine(-1, i);
+    }
+}
 
 void Gardener::startWork() {
     loadDataFromFile();
     _time = 0;
     while (true) {
-
+        std::cout << "Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
         for (int i = 0; i < _flowerbeds.size(); i++) {
             Flowerbed _flowerbed = _flowerbeds[i];
             if (_flowerbed.couldBeWatered(_time))
-                if (needToBeWatered(_flowerbed))
-                    if (!_machine.isBusy(_time)) {
-                        moveMachine(i);
-                        doWatering();
-                        moveMachine(-1);
-            }
+                if (needToBeWatered(_flowerbed)) {
+                    //find non-busy machine there
+                    bool found = false;
+                    for (int j = 0; j < _machines.size() && !found; j++)
+                        if (!_machines[j].isBusy(_time)) {
+                            found = true;
+                            moveMachine(i, j);
+                            doWatering(j);
+                            //moveMachine(-1);
+                        }
+                }
         }
-        _time += 5 * MINUTE;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        checkMachines(); //here you should moveMachine(-1, j) if it's already done, current!=null and !isBusy
+        _time += MINUTE;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
 
     }
 
@@ -90,13 +103,19 @@ std::string Gardener::secondsToHoursAndMins(unsigned long seconds) {
 }
 
 void Gardener::loadDataFromFile() {
-
-    //file beds.txt has number n in the first line,
+    //file machines.txt has number K - number of machines
+    //file beds.txt has number N-number of flowerbeds in the first line,
     //then n lines with TM & TW - time to move and time to water
     //then m_i - number of sensors, connected to this flowerbed
     //then m_i pairs of numbers p_j l_j, where p_j is type of sensor (0 - temp, 1 - humidity)
     //and l_j is limit for this type
     //file i-p_j.txt contains number (size) and then (size) pairs <time, value> for p_j sensor and i flowerbed
+    std::ifstream min("machines.txt");
+    int k;
+    min >> k;
+    min.close();
+    _machines.resize(k);
+
     std::ifstream bin("beds.txt");
     int n;
     bin >> n;
@@ -154,3 +173,5 @@ void Gardener::loadDataFromFile() {
     }
     bin.close();
 }
+
+

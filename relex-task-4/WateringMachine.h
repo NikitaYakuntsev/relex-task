@@ -11,8 +11,11 @@
 class WateringMachine {
 private:
     unsigned int _workTime;
+    unsigned long _commandTime;
     unsigned long _startTime;
     Flowerbed* _currentFlowerbed;
+
+
 
 public:
 
@@ -23,6 +26,8 @@ public:
     void moveTo(Flowerbed* flowerbed);
     void waterCurrentFlowerbed(unsigned long currTime);
     bool isBusy(unsigned long currTime);
+
+    int getState(unsigned long currTime);
 };
 
 
