@@ -11,11 +11,11 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
         if (flowerbedIndex == -1) {
 
             std::cout << "Machine " << machineIndex << " watered flowerbed " <<
-            _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+                _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
+                ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
 
             std::cout << "Machine " << machineIndex << " is moving to start position" <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+                ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
             long tmptime = _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove(); //getTimeToMove with parameter I - destination
             _machines[machineIndex].moveTo(nullptr, _time);
 
@@ -23,9 +23,10 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
             //" at time since start: " << secondsToHoursAndMins(_time + tmptime) << "." << std::endl;
         } else {
             std::cout << "Machine " << machineIndex << " is moving to flowerbed " << flowerbedIndex <<
-            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+                ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
 
             _machines[machineIndex].moveTo(&_flowerbeds[flowerbedIndex], _time);
+            _isFlowerbedBusy[flowerbedIndex] = true;
 
             //std::cout << "Machine " << machineIndex << " will be near the flowerbed " << flowerbedIndex <<
             //". Time since start: " << secondsToHoursAndMins(_time + _flowerbeds[flowerbedIndex].getTimeToMove()) << "." << std::endl;
@@ -61,7 +62,7 @@ bool Gardener::needToBeWatered(Flowerbed &f) {
     ///TODO check sign!
     for (auto &sens : f.getSensors())
         result |= (f.getSensorValue(sens.first, _time) > f.getSensorLimit(sens.first));
-    return result;
+    return result && !_isFlowerbedBusy[f.getIndex()];
 
 }
 
@@ -81,8 +82,10 @@ void Gardener::checkMachines() {
                 break;
             case 3:
                 _machines[i].setNotBusy();
+                _isFlowerbedBusy[_machines[i].getLastFlowerbedIndex()] = false;
                 std::cout << "Machine " << i << " is free, located near flowerbed " << _machines[i].getLastFlowerbedIndex() <<
                              ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+
                 break;
         }
     }
@@ -90,6 +93,8 @@ void Gardener::checkMachines() {
 
 void Gardener::startWork() {
     loadDataFromFile();
+
+
     _time = 0;
     while (true) {
         std::cout << "Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
@@ -147,6 +152,7 @@ void Gardener::loadDataFromFile() {
     int n;
     bin >> n;
     _flowerbeds.resize(n);
+    _isFlowerbedBusy.resize(n, false);
     //flowerbeds loop
     for (int i = 0; i < n; i++) {
 
@@ -154,7 +160,7 @@ void Gardener::loadDataFromFile() {
         for (int j = 0; j < n; j++) {
             int dst;
             bin >> dst;
-            distances[j] = dst;
+            distances[j] = dst * MINUTE;
         }
         _flowerbeds[i].setDistances(distances);
 

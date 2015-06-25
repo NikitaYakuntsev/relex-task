@@ -37,7 +37,7 @@ public:
 
 
 private:
-    const int WATERING_DELAY = 4 * 60 * MINUTE;
+    const long WATERING_DELAY = 4 * 60 * MINUTE;
     unsigned int _index;
 
 
@@ -48,9 +48,6 @@ private:
 
     long _lastWatering;
 
-
-
-private:
     int _timeToMove;
     int _timeToWater;
 

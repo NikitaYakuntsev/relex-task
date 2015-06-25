@@ -14,7 +14,9 @@ void Flowerbed::watering(unsigned long currTime) {
 
 
 bool Flowerbed::couldBeWatered(unsigned long currTime) {
-        return currTime - _lastWatering >= WATERING_DELAY;
+    long tmp = currTime - _lastWatering;
+    bool tmp1 = tmp >= WATERING_DELAY;
+        return tmp >= WATERING_DELAY;
 }
 
 int Flowerbed::getSensorValue(const SensorType &sensorType, const long currTime) {

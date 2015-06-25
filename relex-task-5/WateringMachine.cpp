@@ -54,6 +54,12 @@ int WateringMachine::getWorkTime() const {
 // 1 - start watering
 // 2 - moving back
 // 3 - could be free
+//      0          1        2       3
+//  |---------|----------|--------|---
+//  ^         ^          ^        ^
+//command;waterStart;waterEnd;AtStartPos
+//
+//in the task 5 it could be free after waterEnd point.
 int WateringMachine::getState(unsigned long currTime) {
     int state = 3;
     if (isBusy(currTime)) {
@@ -67,6 +73,7 @@ int WateringMachine::getState(unsigned long currTime) {
             _alreadyMoving = false;
         }
 
+        //there is no period when wateringmachine is returning back to start position
         /*
         if ((waterEnd <= currTime) && (currTime < waterEnd + _currentFlowerbed->getTimeToMove()))
             state = 2;
@@ -75,6 +82,7 @@ int WateringMachine::getState(unsigned long currTime) {
             state = 3;
 
             _alreadyMoving = false;
+
         }
     }
 
@@ -82,10 +90,12 @@ int WateringMachine::getState(unsigned long currTime) {
 }
 
 void WateringMachine::setNotBusy() {
-    _startTime = -1;
-    _alreadyMoving = false;
-    _lastFlowerbedIndex = _currentFlowerbed->getIndex();
-    _currentFlowerbed = nullptr; //probably commented line
+    if (_currentFlowerbed != nullptr) {
+        _startTime = -1;
+        _alreadyMoving = false;
+        _lastFlowerbedIndex = _currentFlowerbed->getIndex();
+        _currentFlowerbed = nullptr; //probably commented line
+    }
 }
 
 unsigned long WateringMachine::getCommandTime() const {
