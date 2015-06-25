@@ -67,3 +67,7 @@ int Flowerbed::getTimeToWater() const {
 void Flowerbed::setTimeToWater(int timeToWater) {
     _timeToWater = timeToWater;
 }
+
+void Flowerbed::setDistances(const std::vector<int> &distances) {
+    _distances = distances;
+}

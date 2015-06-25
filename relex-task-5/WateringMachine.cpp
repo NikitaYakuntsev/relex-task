@@ -76,6 +76,7 @@ int WateringMachine::getState(unsigned long currTime) {
 
 void WateringMachine::setNotBusy() {
     _startTime = -1;
+    _alreadyMoving = false;
     _currentFlowerbed = nullptr;
 }
 

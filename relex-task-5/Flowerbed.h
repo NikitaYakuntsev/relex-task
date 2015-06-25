@@ -26,6 +26,7 @@ public:
     const std::map<SensorType, Sensor> & getSensors() const;
     void setSensors(const std::map<SensorType, Sensor> &sensors);
     void setValueLimits(const std::map<SensorType, int> &valueLimits);
+    void setDistances(const std::vector<int> &distances);
 
     int getTimeToMove() const;
     void setTimeToMove(int timeToMove);
@@ -40,6 +41,8 @@ private:
 
     std::map<SensorType, int> _valueLimits; //limits for sensor type
     std::map<SensorType, Sensor> _sensors;
+
+    std::vector<int> _distances; //array where Ai shows how much time needs to get from this flowerbed to Ith
 
     long _lastWatering;
 

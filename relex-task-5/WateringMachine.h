@@ -13,10 +13,10 @@ private:
     int _workTime;
 
     unsigned long _commandTime;
-    unsigned long _startTime;
+    long _startTime; //working state flag, -1 if not working, used in "alreadyWatering"
     Flowerbed* _currentFlowerbed;
 
-    bool _alreadyMoving;
+    bool _alreadyMoving; //moving flag
 
 
 
