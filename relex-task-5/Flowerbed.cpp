@@ -27,7 +27,7 @@ int Flowerbed::getSensorLimit(const SensorType &sensorType) const {
 }
 
 
-int Flowerbed::getIndex() const {
+unsigned int Flowerbed::getIndex() const {
         return _index;
 }
 
@@ -47,7 +47,7 @@ const std::map<SensorType, Sensor> & Flowerbed::getSensors() const {
     return _sensors;
 }
 
-void Flowerbed::setIndex(int index) {
+void Flowerbed::setIndex(unsigned int index) {
     _index = index;
     _lastWatering = -1 * WATERING_DELAY - MINUTE;
 }
@@ -70,4 +70,11 @@ void Flowerbed::setTimeToWater(int timeToWater) {
 
 void Flowerbed::setDistances(const std::vector<int> &distances) {
     _distances = distances;
+}
+
+int Flowerbed::getTimeToMove(int destination) {
+    if (0 <= destination && destination < _distances.size())
+        return _distances[destination];
+    else
+        throw std::out_of_range("destination");
 }

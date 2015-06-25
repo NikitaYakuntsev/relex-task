@@ -18,6 +18,8 @@ private:
 
     bool _alreadyMoving; //moving flag
 
+    unsigned int _lastFlowerbedIndex;
+
 
 
 public:
@@ -32,6 +34,7 @@ public:
     bool isBusy(unsigned long currTime);
 
     int getState(unsigned long currTime);
+    unsigned int getLastFlowerbedIndex();
 
     void setNotBusy();
 

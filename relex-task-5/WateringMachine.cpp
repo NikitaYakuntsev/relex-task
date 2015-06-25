@@ -8,19 +8,24 @@
 bool WateringMachine::isBusy(unsigned long currTime) {
 
     bool result = (_currentFlowerbed != nullptr);
+    //probably result = !_alreadyMoving && _startTime == -1; but _currentFlowerbed will stay for last position
 
     //return _currentFlowerbed != nullptr;
     return result;
 }
 
-WateringMachine::WateringMachine() : _currentFlowerbed(nullptr), _startTime(-1), _alreadyMoving(false) { }
+WateringMachine::WateringMachine() : _currentFlowerbed(nullptr),
+                                     _startTime(-1),
+                                     _alreadyMoving(false),
+                                     _lastFlowerbedIndex(0) { }
 
 
 void WateringMachine::moveTo(Flowerbed *flowerbed, unsigned long currTime) {
     _alreadyMoving = true;
     if (flowerbed != nullptr) {
         _currentFlowerbed = flowerbed;
-        _workTime = flowerbed->getTimeToWater() + 2 * flowerbed->getTimeToMove(); //to get to flowerbed and return back
+        //_lastFlowerbedIndex = flowerbed->getIndex();
+        //_workTime = flowerbed->getTimeToWater() + flowerbed->getTimeToMove(); //to get to flowerbed - never used
         _commandTime = currTime;
     }
 
@@ -52,7 +57,7 @@ int WateringMachine::getWorkTime() const {
 int WateringMachine::getState(unsigned long currTime) {
     int state = 3;
     if (isBusy(currTime)) {
-        unsigned long waterStart = _commandTime + _currentFlowerbed->getTimeToMove();
+        unsigned long waterStart = _commandTime + _currentFlowerbed->getTimeToMove(_lastFlowerbedIndex);
         if ((_commandTime <= currTime) && (currTime < waterStart))
             state = 0;
 
@@ -62,11 +67,13 @@ int WateringMachine::getState(unsigned long currTime) {
             _alreadyMoving = false;
         }
 
+        /*
         if ((waterEnd <= currTime) && (currTime < waterEnd + _currentFlowerbed->getTimeToMove()))
             state = 2;
-
-        if (currTime >= waterEnd + _currentFlowerbed->getTimeToMove()) {
+        */
+        if (currTime >= waterEnd) {  // + _currentFlowerbed->getTimeToMove()) {
             state = 3;
+
             _alreadyMoving = false;
         }
     }
@@ -77,7 +84,8 @@ int WateringMachine::getState(unsigned long currTime) {
 void WateringMachine::setNotBusy() {
     _startTime = -1;
     _alreadyMoving = false;
-    _currentFlowerbed = nullptr;
+    _lastFlowerbedIndex = _currentFlowerbed->getIndex();
+    _currentFlowerbed = nullptr; //probably commented line
 }
 
 unsigned long WateringMachine::getCommandTime() const {
@@ -91,4 +99,8 @@ bool WateringMachine::alreadyWatering() {
 
 bool WateringMachine::alreadyMoving() {
     return _alreadyMoving;
+}
+
+unsigned int WateringMachine::getLastFlowerbedIndex() {
+    return _lastFlowerbedIndex;
 }

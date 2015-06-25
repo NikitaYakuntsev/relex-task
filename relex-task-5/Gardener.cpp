@@ -16,7 +16,7 @@ void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
 
             std::cout << "Machine " << machineIndex << " is moving to start position" <<
             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-            long tmptime = _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove();
+            long tmptime = _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove(); //getTimeToMove with parameter I - destination
             _machines[machineIndex].moveTo(nullptr, _time);
 
             //std::cout << "Machine " << machineIndex << " will be in the start position" <<
@@ -76,12 +76,12 @@ void Gardener::checkMachines() {
                 doWatering(i);
                 break;
             case 2:
-
+                //not in use
                 moveMachine(-1, i);
                 break;
             case 3:
                 _machines[i].setNotBusy();
-                std::cout << "Machine " << i << " is free " <<
+                std::cout << "Machine " << i << " is free, located near flowerbed " << _machines[i].getLastFlowerbedIndex() <<
                              ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
                 break;
         }
@@ -149,6 +149,14 @@ void Gardener::loadDataFromFile() {
     _flowerbeds.resize(n);
     //flowerbeds loop
     for (int i = 0; i < n; i++) {
+
+        std::vector<int> distances(n, 0);
+        for (int j = 0; j < n; j++) {
+            int dst;
+            bin >> dst;
+            distances[j] = dst;
+        }
+        _flowerbeds[i].setDistances(distances);
 
         int timeToMove, timeToWater; //for flowerbed.
         bin >> timeToMove >> timeToWater;
