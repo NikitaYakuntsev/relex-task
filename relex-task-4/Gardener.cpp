@@ -5,39 +5,50 @@
 #include "Gardener.h"
 
 void Gardener::moveMachine(int flowerbedIndex = 0, int machineIndex = 0) {
-    //returning to start position
-    std::cout << "_______________" << std::endl;
-    if (flowerbedIndex == -1) {
 
-        std::cout << "Machine " << machineIndex << " is moving to start position" <<
-        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-        long tmptime = _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove();
-        _machines[machineIndex].moveTo(nullptr);
+    if (!_machines[machineIndex].alreadyMoving()) {
+        std::cout << "_______________" << std::endl;
+        if (flowerbedIndex == -1) {
 
-        std::cout << "Machine " << machineIndex << " will be in the start position" <<
-        " at time since start: " << secondsToHoursAndMins(_time + tmptime) << "." << std::endl;
-    } else {
-        std::cout << "Machine " << machineIndex << " is moving to flowerbed " << flowerbedIndex <<
-        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
-        //_time += _flowerbeds[flowerbedIndex].getTimeToMove(); //gardener images time to get the flowerbed
-        _machines[machineIndex].moveTo(&_flowerbeds[flowerbedIndex]);
+            std::cout << "Machine " << machineIndex << " watered flowerbed " <<
+            _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
+            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
 
-        std::cout << "Machine " << machineIndex << " will be near the flowerbed " << flowerbedIndex <<
-        ". Time since start: " << secondsToHoursAndMins(_time + _flowerbeds[flowerbedIndex].getTimeToMove()) << "." << std::endl;
+            std::cout << "Machine " << machineIndex << " is moving to start position" <<
+            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+            long tmptime = _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove();
+            _machines[machineIndex].moveTo(nullptr, _time);
+
+            //std::cout << "Machine " << machineIndex << " will be in the start position" <<
+            //" at time since start: " << secondsToHoursAndMins(_time + tmptime) << "." << std::endl;
+        } else {
+            std::cout << "Machine " << machineIndex << " is moving to flowerbed " << flowerbedIndex <<
+            ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+
+            _machines[machineIndex].moveTo(&_flowerbeds[flowerbedIndex], _time);
+
+            //std::cout << "Machine " << machineIndex << " will be near the flowerbed " << flowerbedIndex <<
+            //". Time since start: " << secondsToHoursAndMins(_time + _flowerbeds[flowerbedIndex].getTimeToMove()) << "." << std::endl;
+        }
+        std::cout << "_______________" << std::endl;
     }
-    std::cout << "_______________" << std::endl;
 }
 
 void Gardener::doWatering(int machineIndex = 0) {
-    std::cout << "_______________" << std::endl;
-    std::cout << "Machine " << machineIndex << " will be watering flowerbed " << _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
-    " at time since start: " << secondsToHoursAndMins(_time + _machines[machineIndex].getCurrentFlowerbed()->getTimeToMove()) << "." << std::endl;
-    _machines[machineIndex].waterCurrentFlowerbed(_time);
-    //_time += _machines[machineIndex].getWorkTime();
+    if (!_machines[machineIndex].alreadyWatering()) {
 
-    std::cout << "Machine " << machineIndex << " will water flowerbed " << _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
-    " at time since start: " << secondsToHoursAndMins(_time + _machines[machineIndex].getCurrentFlowerbed()->getTimeToWater()) << "." << std::endl;
-    std::cout << "_______________" << std::endl;
+        std::cout << "Machine " << machineIndex << " is watering flowerbed " <<
+        _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
+        ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+
+        //надо если еще не поливает
+        _machines[machineIndex].waterCurrentFlowerbed(_time);
+        //_time += _machines[machineIndex].getWorkTime();
+
+        // std::cout << "Machine " << machineIndex << " will water flowerbed " << _machines[machineIndex].getCurrentFlowerbed()->getIndex() <<
+        // " at time since start: " << secondsToHoursAndMins(_time + _machines[machineIndex].getCurrentFlowerbed()->getTimeToWater()) << "." << std::endl;
+
+    }
 
 }
 
@@ -56,8 +67,24 @@ bool Gardener::needToBeWatered(Flowerbed &f) {
 
 void Gardener::checkMachines() {
     for (int i = 0; i < _machines.size(); i++) {
-        if (!_machines[i].isBusy(_time) && _machines[i].getCurrentFlowerbed() != nullptr)
-            moveMachine(-1, i);
+        int state = _machines[i].getState(_time);
+        switch (state) {
+            case 0:
+                //machine is moving to point
+                break;
+            case 1:
+                doWatering(i);
+                break;
+            case 2:
+
+                moveMachine(-1, i);
+                break;
+            case 3:
+                _machines[i].setNotBusy();
+                std::cout << "Machine " << i << " is free " <<
+                             ". Time since start: " << secondsToHoursAndMins(_time) << "." << std::endl;
+                break;
+        }
     }
 }
 
@@ -76,7 +103,7 @@ void Gardener::startWork() {
                         if (!_machines[j].isBusy(_time)) {
                             found = true;
                             moveMachine(i, j);
-                            doWatering(j);
+                            //doWatering(j);
                             //moveMachine(-1);
                         }
                 }

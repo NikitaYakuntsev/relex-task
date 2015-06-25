@@ -31,7 +31,7 @@ void Sensor::generateValue(unsigned long currTime) {
                 }
         }
         if (!found) //bad example!
-            _value = rand() % 50 + 10;
+            _value = -273; //rand() % 50 + 10;
 
     }
 }

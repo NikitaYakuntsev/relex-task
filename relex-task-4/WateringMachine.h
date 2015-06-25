@@ -10,10 +10,13 @@
 
 class WateringMachine {
 private:
-    unsigned int _workTime;
+    int _workTime;
+
     unsigned long _commandTime;
     unsigned long _startTime;
     Flowerbed* _currentFlowerbed;
+
+    bool _alreadyMoving;
 
 
 
@@ -23,11 +26,17 @@ public:
 
     Flowerbed * getCurrentFlowerbed() const;
     int getWorkTime() const;
-    void moveTo(Flowerbed* flowerbed);
+    unsigned long getCommandTime() const;
+    void moveTo(Flowerbed *flowerbed, unsigned long currTime);
     void waterCurrentFlowerbed(unsigned long currTime);
     bool isBusy(unsigned long currTime);
 
     int getState(unsigned long currTime);
+
+    void setNotBusy();
+
+    bool alreadyWatering();
+    bool alreadyMoving();
 };
 
 
