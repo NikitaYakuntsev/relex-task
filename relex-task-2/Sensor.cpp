@@ -20,7 +20,19 @@ void Sensor::generateValue(unsigned long currTime) {
     if (_schedule.find(currTime) != std::end(_schedule))
         _value = _schedule.at(currTime);
     else {
-        ///TODO find previous time
+        bool found = false;
+        for (auto it = _schedule.begin(); it != _schedule.end() && !found; ) {
+            auto prev = it;
+            it++;
+            if (it != _schedule.end())
+                if ((prev->first < currTime) && (currTime < it->first)) {
+                    _value = prev->second;
+                    found = true;
+                }
+        }
+        if (!found) //bad example!
+            _value = -273; //rand() % 50 + 10;
+
     }
 }
 
